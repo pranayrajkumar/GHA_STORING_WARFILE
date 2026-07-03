@@ -10,7 +10,7 @@ jobs:
       - name: create a demo file
         run: | 
            mkdir build
-           echo: "this is created from GHA">build/index.html
+           echo: "this is created from GHA" > build/index.html
            
       - name: copy to s3 bucket
         run: |
