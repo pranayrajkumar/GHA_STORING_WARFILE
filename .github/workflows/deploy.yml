@@ -21,8 +21,11 @@ jobs:
 
       - name: download from s3 bucket
         run: |
-         aws s3 cp s3://demo-bucket-avc/index.html .
-         cat index.html
+          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          export AWS_DEFAULT_LOCATION=${{ secrets.AWS_DEFAULT_REGION }}
+          aws s3 cp s3://demo-bucket-avc/index.html .
+          cat index.html
            
            
           
