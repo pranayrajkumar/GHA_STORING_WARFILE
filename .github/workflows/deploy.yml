@@ -1,30 +1,28 @@
-name: Build on Push
-
-on:
-  push: 
-    branches:
-      - main
-
+name: push file to s3
+on: workflow_dispatch
 jobs:
-  pr-build:
+  upload-to-s3:
     runs-on: ubuntu-latest
-
     steps:
-    - name: checkout code
-      uses: actions/checkout@v4
-      
-    - name: setting up java
-      uses: actions/setup-java@v4
-      with:
-        distribution: temurin
-        java-version: 21
+      - name: checkout-code
+        uses: actions/checkout@v4
 
-    - name: building using maven
-      run: mvn clean package
-    
+      - name: create a demo file
+        run: | 
+           mkdir build
+           echo: "this is created from GHA">build/index.html
+           
+      - name: copy to s3 bucket
+        run: |
+          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          export AWS_DEFAULT_LOCATION=${{ secrets.AWS_DEFAULT_REGION }}
+          aws s3 cp build/index.html s3://demo-bucket-avc/
 
-    - name: upload WAR artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: demo-war
-        path: target/*.war
+      - name: download from s3 bucket
+        run: |
+         aws s3 cp s3://demo-bucket-avc/index.html .
+         cat index.html
+           
+           
+          
